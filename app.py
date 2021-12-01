@@ -13,7 +13,7 @@ def get_db():
 #Enrutamiento hacia la url .../municipios la cual devuelve todo el listado de municipios en formato JSON
 #@app.route('/municipios/')
 #def get_municipios():
-#   db = get_db()
+#    db = get_db()
 #    cursor = db.cursor()
 #    cursor.execute('select * from municipios')
 #    municipios = cursor.fetchall()
