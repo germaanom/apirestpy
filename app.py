@@ -41,7 +41,10 @@ def get_municipio(id):
     key_values = ['codmuni', 'nombre', 'codpro']
     cursor = db.cursor()
     #key_values = cursor.description
-    cursor.execute("select * from municipios where codmuni ='"+id+"'")
+    #cursor.execute("select * from municipios where codmuni ='"+id+"'")
+
+    #Consulta modificada para buscar por nombre de municipio
+    cursor.execute("select * from municipios where lower(nombre) =lower('"+id+"')") #lower() convierte el texto a minusculas
     municipio = cursor.fetchall()
     municipios = []
     
@@ -57,7 +60,10 @@ def  get_provincia(id):
     db = get_db()
     cursor = db.cursor()
     key_values =  ['codpro', 'nombre', 'codauton', 'comunidad', 'capital']
-    cursor.execute("select * from provincias where codprov = '"+id+"'")
+    #cursor.execute("select * from provincias where codprov = '"+id+"'")
+
+    #Consulta para buscar por nombre de provincia
+    cursor.execute("select * from provincias where lower(nombre) = lower('"+id+"')")
     provincia = cursor.fetchall()
 
     for provincias in provincia:
@@ -71,7 +77,10 @@ def get_tiempomunicipio(id):
     db = get_db()
     key_values = ['codmuni', 'fecha', 'minima', 'maxima', 'lluvia']
     cursor = db.cursor()
-    cursor.execute("select * from tiempoMunicipio where codmuni = '"+id+"'")
+    #cursor.execute("select * from tiempoMunicipio where codmuni = '"+id+"'")
+
+    #Consulta modificada para buscar por nombre de municipio
+    cursor.execute("select * from tiempoMunicipio where codmuni = (select codmuni from municipios where lower(nombre)=lower('"+id+"'))")
     tiempomunicipio = cursor.fetchall()
 
     for i in tiempomunicipio:
@@ -86,7 +95,7 @@ def get_tiempoprovincia(id):
     db = get_db()
     key_values = ['codprov', 'hoy', 'manana', 'fecha']
     cursor = db.cursor()
-    cursor.execute("select * from tiempoProvincia where codprov = '"+id+"'")
+    cursor.execute("select * from tiempoProvincia where codprov = (select codprov from provincias where lower(nombre) = lower('"+id+"'))")
     tiempoprovincia = cursor.fetchall()
 
     for i in tiempoprovincia:
