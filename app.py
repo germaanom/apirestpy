@@ -24,14 +24,14 @@ def get_db():
 
 
 #Enrutamiento hacia la url .../provincias la cual devuelve todo el listado de las provincias en formato JSON
-#@app.route('/provincias')
-#def get_provincias():
-#    db = get_db()
-#    cursor = db.cursor()
-#    cursor.execute('select * from provincias')
-#    provincias = cursor.fetchall()
-#    #TODO diccionario
-#    return jsonify(provincias)
+@app.route('/provincias')
+def get_provincias():
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('select codprov from provincias')
+    provincias = cursor.fetchall()
+    #TODO diccionario
+    return jsonify(provincias)
 
 
 #Enrutamiento hacia la url .../municipios/codmuni la cual devuelve los datos del municipio especifico en formato JSON
@@ -60,10 +60,10 @@ def  get_provincia(id):
     db = get_db()
     cursor = db.cursor()
     key_values =  ['codpro', 'nombre', 'codauton', 'comunidad', 'capital']
-    #cursor.execute("select * from provincias where codprov = '"+id+"'")
+    cursor.execute("select * from provincias where codprov = '"+id+"'")
 
     #Consulta para buscar por nombre de provincia
-    cursor.execute("select * from provincias where lower(nombre) = lower('"+id+"')")
+    #cursor.execute("select * from provincias where lower(nombre) = lower('"+id+"')")
     provincia = cursor.fetchall()
 
     for provincias in provincia:
@@ -77,10 +77,10 @@ def get_tiempomunicipio(id):
     db = get_db()
     key_values = ['codmuni', 'fecha', 'minima', 'maxima', 'lluvia']
     cursor = db.cursor()
-    #cursor.execute("select * from tiempoMunicipio where codmuni = '"+id+"'")
+    #cursor.execute("select * from tiempoMunicipio where fecha = date() and codmuni = '"+id+"'")
 
     #Consulta modificada para buscar por nombre de municipio
-    cursor.execute("select * from tiempoMunicipio where codmuni = (select codmuni from municipios where lower(nombre)=lower('"+id+"'))")
+    cursor.execute("select * from tiempoMunicipio where  fecha = date() and codmuni = (select codmuni from municipios where lower(nombre)=lower('"+id+"'))")
     tiempomunicipio = cursor.fetchall()
 
     for i in tiempomunicipio:
@@ -95,7 +95,10 @@ def get_tiempoprovincia(id):
     db = get_db()
     key_values = ['codprov', 'hoy', 'manana', 'fecha']
     cursor = db.cursor()
-    cursor.execute("select * from tiempoProvincia where codprov = (select codprov from provincias where lower(nombre) = lower('"+id+"'))")
+    cursor.execute("select * from tiempoProvincia where fecha = date() and codprov = '"+id+"'")
+    
+    #Consulta para busqueda por nombre
+    #cursor.execute("select * from tiempoProvincia where fecha = date() and codprov = (select codprov from provincias where lower(nombre) = lower('"+id+"'))")
     tiempoprovincia = cursor.fetchall()
 
     for i in tiempoprovincia:
