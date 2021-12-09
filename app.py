@@ -28,7 +28,7 @@ def get_db():
 def get_provincias():
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('select codprov from provincias')
+    cursor.execute('select codprov, nombre from provincias')
     provincias = cursor.fetchall()
     #TODO diccionario
     return jsonify(provincias)
@@ -88,6 +88,23 @@ def get_tiempomunicipio(id):
 
     return jsonify(d)
 
+#Enrutamiento hacia la url .../tiempomunicipio/codmuni/fecha la cual devuelve los datos del tiempo de un día en concreto
+# de municipio en formato JSON
+@app.route('/tiempomunicipioFecha/<id>/<fecha>')
+def get_tiempomunicipioFecha(id,fecha):
+    db = get_db()
+    key_values = ['codmuni', 'fecha', 'minima', 'maxima', 'lluvia']
+    cursor = db.cursor()
+    #cursor.execute("select * from tiempoMunicipio where fecha = date() and codmuni = '"+id+"'")
+    #Consulta modificada para buscar por nombre de municipio
+    cursor.execute("select * from tiempoMunicipio where fecha = '" + fecha + "' and codmuni = (select codmuni from municipios where lower(nombre)=lower('"+id+"'))")
+    tiempomunicipio = cursor.fetchall()
+
+    for i in tiempomunicipio:
+        d = dict(zip(key_values, i))
+
+    return jsonify(d)
+
 
 #Enrutamiento hacia la url .../tiempoprovincia/conprov la cual devuelve los datos del tiempo de una provincia en formato JSON
 @app.route('/tiempoprovincia/<id>')
@@ -105,6 +122,23 @@ def get_tiempoprovincia(id):
         d = dict(zip(key_values, i))
 
     return jsonify(d)    
+
+#Enrutamiento hacia la url .../tiempoprovinciaFecha/codprov/fecha la cual devuelve los datos del tiempo de una día en concreto 
+# de una provincia en formato JSON
+@app.route('/tiempoprovinciaFecha/<id>/<fecha>')
+def get_tiempoprovinciaFecha(id,fecha):
+    db = get_db()
+    key_values = ['codprov', 'hoy', 'manana', 'fecha']
+    cursor = db.cursor()
+    cursor.execute("select * from tiempoProvincia where fecha = '" + fecha + "' and codprov = '"+id+"'")
+    #Consulta para busqueda por nombre
+    #cursor.execute("select * from tiempoProvincia where fecha = date() and codprov = (select codprov from provincias where lower(nombre) = lower('"+id+"'))")
+    tiempoprovincia = cursor.fetchall()
+
+    for i in tiempoprovincia:
+        d = dict(zip(key_values, i))
+
+    return jsonify(d)   
 
 #Devuelve el id de ese nombre de municipio
 @app.route('/idmunicipio/<nombre>')
