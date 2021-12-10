@@ -13,14 +13,14 @@ def get_db():
 
 
 #Enrutamiento hacia la url .../municipios la cual devuelve todo el listado de municipios en formato JSON
-#@app.route('/municipios/')
-#def get_municipios():
-#    db = get_db()
-#    cursor = db.cursor()
-#    cursor.execute('select nombre from municipios')
-#    municipios = cursor.fetchall()
-#    #TODO DICCIONARIO
-#    return jsonify(municipios)
+@app.route('/municipios/')
+def get_municipios():
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('select nombre from municipios')
+    municipios = cursor.fetchall()
+    #TODO DICCIONARIO
+    return jsonify(municipios)
 
 
 #Enrutamiento hacia la url .../provincias la cual devuelve todo el listado de las provincias en formato JSON
