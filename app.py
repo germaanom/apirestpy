@@ -5,7 +5,14 @@ import sqlite3
 
 app = Flask(__name__)
 
+#Variables GLOBALES
 id = ""
+KEY_VALUES_MUNI = ['codmuni', 'nombre', 'codpro']
+KEY_VALUES_PROV = ['codpro', 'nombre', 'codauton', 'comunidad', 'capital']
+KEY_VALUES_T_MUNI = ['codmuni', 'fecha', 'minima', 'maxima', 'lluvia']
+KEY_VALUES_T_PROV = ['codprov', 'hoy', 'manana', 'fecha']
+
+
 #Define la conexion a la base de datos
 def get_db():
     conn = sqlite3.connect("tiempo.db")
@@ -24,7 +31,7 @@ def get_municipios():
 
 
 #Enrutamiento hacia la url .../provincias la cual devuelve todo el listado de las provincias en formato JSON
-@app.route('/provincias')
+@app.route('/provincias/')
 def get_provincias():
     db = get_db()
     cursor = db.cursor()
@@ -38,7 +45,7 @@ def get_provincias():
 @app.route('/municipios/<id>')
 def get_municipio(id):
     db = get_db()
-    key_values = ['codmuni', 'nombre', 'codpro']
+    #KEY_VALUES_MUNI = ['codmuni', 'nombre', 'codpro']
     cursor = db.cursor()
     #key_values = cursor.description
     #cursor.execute("select * from municipios where codmuni ='"+id+"'")
@@ -49,7 +56,7 @@ def get_municipio(id):
     municipios = []
     
     for municipios in municipio:
-        d = dict(zip(key_values, municipios))
+        d = dict(zip(KEY_VALUES_MUNI, municipios))
 
     return jsonify(d)
 
@@ -59,7 +66,7 @@ def get_municipio(id):
 def  get_provincia(id):
     db = get_db()
     cursor = db.cursor()
-    key_values =  ['codpro', 'nombre', 'codauton', 'comunidad', 'capital']
+    #KEY_VALUES_PROV =  ['codpro', 'nombre', 'codauton', 'comunidad', 'capital']
     cursor.execute("select * from provincias where codprov = '"+id+"'")
 
     #Consulta para buscar por nombre de provincia
@@ -67,7 +74,7 @@ def  get_provincia(id):
     provincia = cursor.fetchall()
 
     for provincias in provincia:
-        d = dict(zip(key_values, provincias))
+        d = dict(zip(KEY_VALUES_PROV, provincias))
     return jsonify(d)
 
 
@@ -75,7 +82,7 @@ def  get_provincia(id):
 @app.route('/tiempomunicipio/<id>')
 def get_tiempomunicipio(id):
     db = get_db()
-    key_values = ['codmuni', 'fecha', 'minima', 'maxima', 'lluvia']
+    #KEY_VALUES_T_MUNI = ['codmuni', 'fecha', 'minima', 'maxima', 'lluvia']
     cursor = db.cursor()
     #cursor.execute("select * from tiempoMunicipio where fecha = date() and codmuni = '"+id+"'")
 
@@ -84,7 +91,7 @@ def get_tiempomunicipio(id):
     tiempomunicipio = cursor.fetchall()
 
     for i in tiempomunicipio:
-        d = dict(zip(key_values, i))
+        d = dict(zip(KEY_VALUES_T_MUNI, i))
 
     return jsonify(d)
 
@@ -93,7 +100,7 @@ def get_tiempomunicipio(id):
 @app.route('/tiempomunicipioFecha/<id>/<fecha>')
 def get_tiempomunicipioFecha(id,fecha):
     db = get_db()
-    key_values = ['codmuni', 'fecha', 'minima', 'maxima', 'lluvia']
+    #KEY_VALUES_T_MUNI = ['codmuni', 'fecha', 'minima', 'maxima', 'lluvia']
     cursor = db.cursor()
     #cursor.execute("select * from tiempoMunicipio where fecha = date() and codmuni = '"+id+"'")
     #Consulta modificada para buscar por nombre de municipio
@@ -101,7 +108,7 @@ def get_tiempomunicipioFecha(id,fecha):
     tiempomunicipio = cursor.fetchall()
 
     for i in tiempomunicipio:
-        d = dict(zip(key_values, i))
+        d = dict(zip(KEY_VALUES_T_MUNI, i))
 
     return jsonify(d)
 
@@ -110,7 +117,7 @@ def get_tiempomunicipioFecha(id,fecha):
 @app.route('/tiempoprovincia/<id>')
 def get_tiempoprovincia(id):
     db = get_db()
-    key_values = ['codprov', 'hoy', 'manana', 'fecha']
+    #KEY_VALUES_T_PROV = ['codprov', 'hoy', 'manana', 'fecha']
     cursor = db.cursor()
     cursor.execute("select * from tiempoProvincia where fecha = date() and codprov = '"+id+"'")
     
@@ -119,7 +126,7 @@ def get_tiempoprovincia(id):
     tiempoprovincia = cursor.fetchall()
 
     for i in tiempoprovincia:
-        d = dict(zip(key_values, i))
+        d = dict(zip(KEY_VALUES_T_PROV, i))
 
     return jsonify(d)    
 
@@ -128,7 +135,7 @@ def get_tiempoprovincia(id):
 @app.route('/tiempoprovinciaFecha/<id>/<fecha>')
 def get_tiempoprovinciaFecha(id,fecha):
     db = get_db()
-    key_values = ['codprov', 'hoy', 'manana', 'fecha']
+    #KEY_VALUES_T_PROV = ['codprov', 'hoy', 'manana', 'fecha']
     cursor = db.cursor()
     cursor.execute("select * from tiempoProvincia where fecha = '" + fecha + "' and codprov = '"+id+"'")
     #Consulta para busqueda por nombre
@@ -136,7 +143,7 @@ def get_tiempoprovinciaFecha(id,fecha):
     tiempoprovincia = cursor.fetchall()
 
     for i in tiempoprovincia:
-        d = dict(zip(key_values, i))
+        d = dict(zip(KEY_VALUES_T_PROV, i))
 
     return jsonify(d)   
 
